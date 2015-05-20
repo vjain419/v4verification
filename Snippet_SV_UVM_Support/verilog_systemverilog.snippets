@@ -1,0 +1,379 @@
+#Developed by Vinay Jain
+#Description : Support for UVM common sytanx.
+#Report bug on <v4verification.com>
+snippet info  uvm_info ..
+	\`uvm_info(${1:ID},$sformatf("${2:MSG}"),${3:Verbosity})
+
+snippet error uvm_error ..
+	\`uvm_error(${1:ID},$sformatf("${2:MSG}"))
+
+snippet warn uvm_warning ..
+	\`uvm_warning(${1:ID},$sformatf("${2:MSG}"))
+
+snippet fatal  uvm_fatal ..
+	\`uvm_fatal(${1:ID},$sformatf("${2:MSG}"))
+
+snippet factory uvm_object_utils .. 
+	\`uvm_object_utils(${1})
+
+snippet factory uvm_object_utils_begin .. 
+	\`uvm_object_utils_begin(${1})
+	     //Register fields/array here
+	\`uvm_object_utils_end
+
+snippet factory uvm_component_utils .. 
+	\`uvm_component_utils(${1})
+
+snippet factory uvm_component_utils_begin .. 
+	\`uvm_component_utils_begin(${1})
+	     //Register fields/array here
+	\`uvm_component_utils_end
+
+snippet new object new method ..
+	function new(string name = "${1}");
+	    super.new(name);
+	endfunction : new
+
+snippet create object_create ..
+	${1:} = ${2:}::type_id::create("$2");
+
+snippet config config_db::set ..
+	uvm_config_db#(${1:ClassType})::set(${2:Context},"${3:InstName}","${4:FieldName}",${5:Value});
+
+snippet config config_db::get ..
+	if(!uvm_config_db#(${1:ClassType})::get(${2:Context},"${3:InstName}","${4:FieldName}",${5:Value}))
+	    `uvm_warning(get_name(),"$1 is not received")
+
+snippet new component new method .. 
+	function new(string name = "${1}",uvm_component parent=null);
+	    super.new(name,parent);
+	endfunction : new
+
+#UVM Phases
+snippet phase build_phase ..
+	virtual function void build_phase(uvm_phase phase);
+	    super.build_phase(phase);
+			${1}
+	endfunction : build_phase 
+
+snippet phase connect_phase ..
+	virtual function void connect_phase(uvm_phase phase);
+			super.connect_phase(phase);
+			${1};
+	endfunction : connect_phase 
+
+snippet phase end_of_elaboration_phase ..
+	virtual function void end_of_elaboration_phase (uvm_phase phase);
+			super.end_of_elaboration_phase(phase);
+			${1};
+	endfunction : end_of_elaboration_phase
+
+snippet phase start_of_simulation_phase ..
+	virtual function void start_of_simulation_phase (uvm_phase phase);
+			super.start_of_simulation_phase(phase);
+			${1};
+	endfunction : start_of_simulation_phase 
+
+snippet phase run_phase ..
+	virtual task run_phase(uvm_phase phase);
+	    ${1}
+	endtask : run_phase 
+
+#UVM Standard Component
+snippet monitor uvm_monitor..
+	class ${1:_monitor} extends uvm_monitor;
+	    `uvm_component_utils($1)
+	    
+	    uvm_analysis_port#(_transaction) mon_ap;
+	    _vif vif;
+	    
+	    function new(string name = "$1",uvm_component parent=null);        
+	        super.new(name,parent);
+	    endfunction : new
+	    
+	    virtual function void build_phase(uvm_phase phase);
+	        super.build_phase(phase);
+	        //Get Virtual interface from ConfigDB
+	        
+	        mon_ap = new();
+	    endfunction : build_phase
+	    
+	    virtual task run_phase(uvm_phase phase);
+	        _transaction tr;
+	        forever begin
+	            //Start with new and clean transaction
+	            tr = _transaction::type_id::create("mon_tr");
+	            
+	            //Code to observer interface and covert into tranasction item
+	            
+	            //Broadcast the transaction through analysis port
+	            mon_ap.write(tr);
+	        end
+	    endtask : run_phase
+	endclass : $1
+
+snippet class uvm_object ..
+	class ${1:} extends uvm_object;
+	    `uvm_object_utils($1)
+			//Variable Declaration
+	
+	    //Class Constructor
+	    function new(string name = "$1");
+	        super.new(name);
+	    endfunction : new
+
+	    //Rest of code here
+
+	endclass : $1 
+
+snippet class uvm_sequence ..
+	class ${1:} extends uvm_sequence;
+	    `uvm_object_utils($1)
+			//Variable Declaration
+			
+			//Class Constructor
+			function new(string name = "$1");
+			    super.new(name);
+			endfunction : new
+			
+			virtual task body();
+			endtask : body
+			
+			//Rest of code here
+	endclass : $1 
+
+snippet class uvm_component ..
+	class ${1:} extends uvm_component;
+	    `uvm_component_utils($1)
+			
+			//Variable Declaration
+	  	//Class Constructor
+			function new(string name = "$1",uvm_component parent=null);
+			    super.new(name,parnet);
+			endfunction : new
+
+			//Build Phase
+			function void build_phase(uvm_phase phase);
+	    		super.build_phase(phase);
+			endfunction : build_phase 
+
+			//Connect Phase
+			function void connect_phase(uvm_phase phase);
+	    		super.connect_phase(phase);
+			endfunction : connect_phase
+
+			function end_of_elaboration_phase(uvm_phase phase);
+	    		super.end_of_elaboration_phase(phase);
+			endfunction : end_of_elaboration_phase 
+
+			virtual task run_phase(uvm_phase phase);
+			endtask : run_phase 
+	
+			//Rest of code here
+
+	endclass : $1
+
+snippet header ARM_header .. 
+	/******************************************************************************
+	*    The confidential and proprietary information contained in this file may
+	*    only be used by a person authorised under and to the extent permitted
+	*    by a subsisting licensing agreement from ARM Limited.
+	* 
+	*           (C) COPYRIGHT  2012-2015 ARM Limited.
+	*               ALL RIGHTS RESERVED
+	* 
+	*    This entire notice must be reproduced on all copies of this file
+	*    and copies of this file may only be made by a person if such person is
+	*    permitted to do so under the terms of a subsisting license agreement
+	*    from ARM Limited.
+	* ----------------------------------------------------------------------------
+	*    SVN Information:
+	* 
+	*    File Revision       :$Revision: $
+	*    File Date           :$Date:$
+	* 
+	*    Release Information :$State: Exp $
+	*  ---------------------------------------------------------------------------
+	*  Purpose : <${1:Write here}> 
+	*****************************************************************************/
+
+#Vinay Jain Modification ends here
+snippet always  always @ ..
+	always @(${1:posedge clk}) begin
+	   ${2}
+	end
+snippet always  always_comb ..
+	always_comb begin
+	   ${1}
+	end
+
+snippet always  always_ff ..
+	always_ff @(${1:posedge clk or negedge reset_n})
+	   ${2}
+	end
+
+snippet always  always_latch ..
+	always_latch
+	   ${1}
+	end
+
+
+snippet case  case() .. 
+	case(${1:expression})
+	  ${2:value1}: begin
+	     ${3}
+	  end
+	
+	  // other case branches
+	
+	  default: begin
+	
+	  end
+	endcase
+	
+snippet case  casex() .. 
+	casex(${1:expression})
+	  ${2:value1}: begin
+	     ${3}
+	  end
+	
+	  // other case branches
+	
+	  default: begin
+	
+	  end
+	endcase
+	
+snippet case  casez() .. 
+	casez(${1:expression})
+	  ${2:value1}: begin
+	     ${3}
+	  end
+	
+	  // other case branches
+	
+	  default: begin
+	
+	  end
+	endcase
+
+snippet class  class .. endclass
+	class ${1:class_name} extends ${2:base_class};
+	   ${4}
+	   function new(${3:args});
+	      super.new($3);
+	
+	   endfunction: new
+	
+	endclass: $1
+
+snippet do  do .. while()
+	do begin
+	   ${2}
+	end while($1);
+	
+snippet enum  enum .. { .. }
+	typedef enum {${2}
+		      } ${1:name_e};
+
+snippet final  final ..
+	final begin
+	   ${1}
+	end
+
+snippet for  for() .. 
+	for(${1:int i = 0}; ${2:i != n}; ${3:++i}) begin
+	   ${4}
+	end
+
+snippet for  foreach(x[i]) ..
+	foreach(${1:x}[i]) begin
+	   ${2}
+	end
+
+snippet for  forever .. 
+	forever begin
+	   ${1}
+	end
+
+snippet fork  fork .. join
+	fork
+	   begin
+	      ${1}
+	   end
+	   begin
+	
+	   end
+	join
+snippet fork  fork .. join_any
+	fork
+	   begin
+	      ${1}
+	   end
+	   begin
+	
+	   end
+	join_any
+snippet fork  fork .. join_none
+	fork
+	   begin
+	      ${1}
+	   end
+	   begin
+	
+	   end
+	join_none
+
+snippet function  function .. endfunction
+	function ${1:void} ${2:function_name} ($3);
+	  ${4}
+	endfunction: $2
+
+snippet if  if() .. 
+	if(${1:condition}) begin
+	   ${2}
+	end
+	
+snippet initial  initial ..
+	initial begin
+	   ${1}
+	end
+
+snippet package  package .. endpackage
+	package ${1:package_name};
+	  ${2}
+	endpackage: $1
+
+snippet program  program .. { .. }
+	program automatic ${1:name};
+	   // declarations
+	   ${2}
+	
+	   initial begin
+	
+	   end
+	endprogram: $1
+
+snippet struct  struct ... { ... }
+	typedef struct {
+	   ${2}
+	   } ${1:name_s};
+
+snippet task  task .. endtask
+	task ${1:task_name} ($3);
+	  ${2}
+	endtask: $1
+
+snippet typedef  typedef ..
+	typedef ${1:type} ${2:type_name};
+	${3}
+
+snippet union  union ... { ... }
+	typedef union {
+	   ${2}
+	} ${1:name_u};
+
+snippet while  while() ..
+	while (${1:condition}) begin
+	   ${2}
+	end

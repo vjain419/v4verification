@@ -1,0 +1,30 @@
+#UVM Shortcodes
+info        -- uvm_info
+error       -- uvm_error
+warn        -- uvm_warning
+fatal       -- uvm_fatal
+factory     -- factory registration using utils macros
+new         -- new method for class/object/component
+create      -- UVM create syntax
+config      -- configDB set/get syntax
+phases      -- uvm_phases method e.g build_phase,connect_phase etc.
+monitor     -- Uvm monitor template
+class       -- class/uvm_object/uvm_component template with all phases prototype.
+
+#System verilgo/Verilog shortcodes
+enum        -- typedef enum syntax
+always      -- always syntax. always/always_ff/always_latch
+case        -- case/casex etc.
+do          -- do..while loop
+for         -- for/forever/foreach loop syntax
+while       -- while loop
+fork        -- fork syntax. fork..join/fork..join_any etc.
+if          -- if syntax.
+function    -- function declaration.
+task        -- task declaration.
+if          -- if..else statment.
+initial     -- initial..begin...end
+package     -- SV package
+program     -- program block
+struct      -- SV structure
+union       -- SV union.
